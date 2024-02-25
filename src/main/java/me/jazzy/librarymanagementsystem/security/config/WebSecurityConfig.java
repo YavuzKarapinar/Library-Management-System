@@ -1,6 +1,8 @@
-package me.jazzy.librarymanagementsystem.security;
+package me.jazzy.librarymanagementsystem.security.config;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.security.PasswordEncoder;
+import me.jazzy.librarymanagementsystem.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +37,7 @@ public class WebSecurityConfig {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder.encoder());
-
+        provider.setUserDetailsService(userService);
         return provider;
     }
 }
