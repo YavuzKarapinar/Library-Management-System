@@ -24,5 +24,5 @@ public class Book {
     private String summary;
     private String categoryName;
     private LocalDateTime productionYear;
-    private Long authorId;
+    private String authorName;
 }

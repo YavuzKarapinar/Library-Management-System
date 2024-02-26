@@ -5,6 +5,7 @@ import me.jazzy.librarymanagementsystem.security.PasswordEncoder;
 import me.jazzy.librarymanagementsystem.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,7 +24,9 @@ public class WebSecurityConfig {
         return http
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(configurer -> {
-                    configurer.requestMatchers("/api/v*/**")
+                    configurer.requestMatchers(HttpMethod.POST, "/api/v*/books")
+                            .hasAuthority("MANAGER");
+                    configurer.requestMatchers("/api/v*/registration")
                             .permitAll();
                     configurer.anyRequest().authenticated();
                 })

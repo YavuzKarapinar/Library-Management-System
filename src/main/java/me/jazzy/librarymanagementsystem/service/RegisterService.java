@@ -1,11 +1,7 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
-import me.jazzy.librarymanagementsystem.model.RegisterRequest;
-import me.jazzy.librarymanagementsystem.model.ResponseModel;
-import me.jazzy.librarymanagementsystem.model.User;
-import me.jazzy.librarymanagementsystem.model.UserType;
-import me.jazzy.librarymanagementsystem.repository.UserRepository;
+import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.validator.EmailValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +14,7 @@ public class RegisterService {
 
     private final EmailValidation emailValidation;
     private final UserService userService;
+    private final BookService bookService;
 
     public ResponseModel singUpUser(RegisterRequest request) {
 
@@ -40,6 +37,16 @@ public class RegisterService {
         return new ResponseModel(
                 HttpStatus.OK.value(),
                 "User successfully registered.",
+                LocalDateTime.now()
+        );
+    }
+
+    public ResponseModel registerBook(Book book) {
+        bookService.saveBook(book);
+
+        return new ResponseModel(
+                HttpStatus.OK.value(),
+                "New Book Added",
                 LocalDateTime.now()
         );
     }
