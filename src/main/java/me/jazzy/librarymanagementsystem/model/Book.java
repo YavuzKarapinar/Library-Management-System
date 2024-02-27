@@ -1,9 +1,6 @@
 package me.jazzy.librarymanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +19,24 @@ public class Book {
     private Long isbn;
     private String publisher;
     private String summary;
-    private String categoryName;
     private LocalDateTime productionYear;
     private String authorName;
+
+    @OneToOne
+    @JoinColumn(
+            name = "category_id"
+    )
+    private Category category;
+
+    public Book(String publisher,
+                String summary,
+                Category category,
+                LocalDateTime productionYear,
+                String authorName) {
+        this.publisher = publisher;
+        this.summary = summary;
+        this.category = category;
+        this.productionYear = productionYear;
+        this.authorName = authorName;
+    }
 }

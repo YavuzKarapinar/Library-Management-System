@@ -1,6 +1,7 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.dto.BookDTO;
 import me.jazzy.librarymanagementsystem.dto.RegisterRequest;
 import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.validator.EmailValidation;
@@ -16,6 +17,7 @@ public class RegisterService {
     private final EmailValidation emailValidation;
     private final UserService userService;
     private final BookService bookService;
+    private final CategoryService categoryService;
 
     public ResponseModel singUpUser(RegisterRequest request) {
 
@@ -42,7 +44,18 @@ public class RegisterService {
         );
     }
 
-    public ResponseModel registerBook(Book book) {
+    public ResponseModel registerBook(BookDTO bookDTO) {
+
+        Category category = categoryService.findCategoryByName(bookDTO.getCategoryName());
+
+        Book book = new Book(
+                bookDTO.getPublisher(),
+                bookDTO.getSummary(),
+                category,
+                bookDTO.getProductionYear(),
+                bookDTO.getAuthorName()
+        );
+
         bookService.saveBook(book);
 
         return new ResponseModel(

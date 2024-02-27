@@ -1,7 +1,7 @@
 package me.jazzy.librarymanagementsystem.controller;
 
 import lombok.AllArgsConstructor;
-import me.jazzy.librarymanagementsystem.model.Book;
+import me.jazzy.librarymanagementsystem.dto.BookDTO;
 import me.jazzy.librarymanagementsystem.model.ResponseModel;
 import me.jazzy.librarymanagementsystem.service.RegisterService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class BookController {
     private final RegisterService registerService;
 
     @PostMapping
-    public ResponseEntity<ResponseModel> registerBook(@RequestBody Book book) {
-        return new ResponseEntity<>(registerService.registerBook(book), HttpStatus.OK);
+    public ResponseEntity<ResponseModel> registerBook(@RequestBody BookDTO bookDTO) {
+        return new ResponseEntity<>(registerService.registerBook(bookDTO), HttpStatus.OK);
     }
 }

@@ -34,12 +34,6 @@ public class Borrowing {
     )
     private Book book;
 
-    @OneToOne
-    @JoinColumn(
-            name = "category_id"
-    )
-    private Category category;
-
     public Borrowing(BorrowingState borrowingState,
                      LocalDateTime borrowingDate,
                      User user,
