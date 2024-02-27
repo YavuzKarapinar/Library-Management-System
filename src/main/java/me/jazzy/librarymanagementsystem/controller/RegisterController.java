@@ -1,7 +1,7 @@
 package me.jazzy.librarymanagementsystem.controller;
 
 import lombok.AllArgsConstructor;
-import me.jazzy.librarymanagementsystem.model.RegisterRequest;
+import me.jazzy.librarymanagementsystem.dto.RegisterRequest;
 import me.jazzy.librarymanagementsystem.model.ResponseModel;
 import me.jazzy.librarymanagementsystem.service.RegisterService;
 import org.springframework.http.HttpStatus;

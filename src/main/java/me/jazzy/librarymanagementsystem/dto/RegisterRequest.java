@@ -1,4 +1,4 @@
-package me.jazzy.librarymanagementsystem.model;
+package me.jazzy.librarymanagementsystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
