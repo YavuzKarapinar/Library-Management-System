@@ -1,6 +1,7 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.dto.RegisterRequest;
 import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.validator.EmailValidation;
 import org.springframework.http.HttpStatus;

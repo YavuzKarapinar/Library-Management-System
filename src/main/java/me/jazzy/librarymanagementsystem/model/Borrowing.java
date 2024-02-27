@@ -39,4 +39,14 @@ public class Borrowing {
             name = "category_id"
     )
     private Category category;
+
+    public Borrowing(BorrowingState borrowingState,
+                     LocalDateTime borrowingDate,
+                     User user,
+                     Book book) {
+        this.borrowingState = borrowingState;
+        this.borrowingDate = borrowingDate;
+        this.user = user;
+        this.book = book;
+    }
 }
