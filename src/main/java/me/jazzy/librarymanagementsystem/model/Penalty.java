@@ -26,4 +26,13 @@ public class Penalty {
     )
     private User user;
 
+    public Penalty(String penaltyReason,
+                   LocalDateTime penaltyStartingDate,
+                   LocalDateTime penaltyFinishingDate,
+                   User user) {
+        this.penaltyReason = penaltyReason;
+        this.penaltyStartingDate = penaltyStartingDate;
+        this.penaltyFinishingDate = penaltyFinishingDate;
+        this.user = user;
+    }
 }
