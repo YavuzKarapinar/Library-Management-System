@@ -2,6 +2,8 @@ package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
 import me.jazzy.librarymanagementsystem.dto.BorrowingDTO;
+import me.jazzy.librarymanagementsystem.exception.notfound.BookNotFoundException;
+import me.jazzy.librarymanagementsystem.exception.notfound.UserNotFoundException;
 import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.repository.BookRepository;
 import me.jazzy.librarymanagementsystem.repository.BorrowingRepository;
@@ -22,10 +24,10 @@ public class BorrowingService {
     public ResponseModel borrowingBook(BorrowingDTO borrowingDTO) {
 
         User user = userRepository.findById(borrowingDTO.getUserId())
-                .orElseThrow(() -> new IllegalStateException("There is no such user"));
+                .orElseThrow(() -> new UserNotFoundException("There is no such user"));
 
         Book book = bookRepository.findById(borrowingDTO.getIsbn())
-                .orElseThrow(() -> new IllegalStateException("There is no such book"));
+                .orElseThrow(() -> new BookNotFoundException("There is no such book"));
 
         Borrowing borrowing = new Borrowing(
                 BorrowingState.PENDING,

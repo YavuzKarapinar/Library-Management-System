@@ -1,6 +1,7 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.exception.badrequest.UserBadRequestException;
 import me.jazzy.librarymanagementsystem.model.User;
 import me.jazzy.librarymanagementsystem.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +30,7 @@ public class UserService implements UserDetailsService {
                 .isPresent();
 
         if(isEmailAlreadyTaken)
-            throw new IllegalStateException("Email already taken by another user");
+            throw new UserBadRequestException("Email already taken by another user");
 
         String encodedPassword = encoder.encode(user.getPassword());
         user.setPassword(encodedPassword);

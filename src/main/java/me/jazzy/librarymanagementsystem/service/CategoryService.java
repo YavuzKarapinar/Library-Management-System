@@ -1,6 +1,7 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.exception.notfound.CategoryNotFoundException;
 import me.jazzy.librarymanagementsystem.model.Category;
 import me.jazzy.librarymanagementsystem.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public class CategoryService {
 
     public Category findCategoryByName(String name) {
         return categoryRepository.findByCategoryName(name)
-                .orElseThrow(() -> new IllegalStateException("There is no such category"));
+                .orElseThrow(() -> new CategoryNotFoundException("There is no such category"));
     }
 
 }

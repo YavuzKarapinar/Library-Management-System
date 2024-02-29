@@ -3,6 +3,7 @@ package me.jazzy.librarymanagementsystem.service;
 import lombok.AllArgsConstructor;
 import me.jazzy.librarymanagementsystem.dto.BookDTO;
 import me.jazzy.librarymanagementsystem.dto.RegisterRequest;
+import me.jazzy.librarymanagementsystem.exception.badrequest.UserBadRequestException;
 import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.validator.EmailValidation;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class RegisterService {
         boolean isEmailValid = emailValidation.test(request.getEmail());
 
         if(!isEmailValid)
-            throw new IllegalStateException("Email is not valid!");
+            throw new UserBadRequestException("Email is not valid!");
 
         User user = new User(
                 request.getFirstName(),

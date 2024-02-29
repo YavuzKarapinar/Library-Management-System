@@ -2,6 +2,8 @@ package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
 import me.jazzy.librarymanagementsystem.dto.PenaltyDTO;
+import me.jazzy.librarymanagementsystem.exception.notfound.PenaltyNotFoundException;
+import me.jazzy.librarymanagementsystem.exception.notfound.UserNotFoundException;
 import me.jazzy.librarymanagementsystem.model.Penalty;
 import me.jazzy.librarymanagementsystem.model.ResponseModel;
 import me.jazzy.librarymanagementsystem.model.User;
@@ -22,7 +24,7 @@ public class PenaltyService {
     public ResponseModel newPenalty(PenaltyDTO penaltyDTO) {
 
         User user = userRepository.findById(penaltyDTO.getUserId())
-                        .orElseThrow(() -> new IllegalStateException("There is no such user"));
+                        .orElseThrow(() -> new UserNotFoundException("There is no such user"));
 
         Penalty penalty = new Penalty(
                 penaltyDTO.getReason(),
@@ -42,7 +44,7 @@ public class PenaltyService {
 
     public Penalty getPenaltyById(Long id) {
         return penaltyRepository.findById(id)
-                    .orElseThrow(() -> new IllegalStateException("There is no such penalty"));
+                    .orElseThrow(() -> new PenaltyNotFoundException("There is no such penalty"));
     }
 
 }
