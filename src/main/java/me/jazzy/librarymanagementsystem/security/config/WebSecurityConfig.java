@@ -9,10 +9,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 @AllArgsConstructor
 public class WebSecurityConfig {
 
@@ -24,8 +26,12 @@ public class WebSecurityConfig {
         return http
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests(configurer -> {
-                    configurer.requestMatchers(HttpMethod.POST, "/api/v*/books")
+                    configurer.requestMatchers(HttpMethod.POST, "/api/v*/**")
                             .hasAuthority("MANAGER");
+                    configurer.requestMatchers(HttpMethod.GET, "/api/v*/**")
+                            .permitAll();
+                    configurer.requestMatchers(HttpMethod.PUT, "/api/v*/**")
+                            .hasAnyAuthority("STAFF", "MANAGER");
                     configurer.requestMatchers("/api/v*/registration")
                             .permitAll();
                     configurer.anyRequest().authenticated();
