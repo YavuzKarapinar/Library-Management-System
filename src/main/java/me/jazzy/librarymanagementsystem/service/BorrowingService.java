@@ -3,6 +3,7 @@ package me.jazzy.librarymanagementsystem.service;
 import lombok.AllArgsConstructor;
 import me.jazzy.librarymanagementsystem.dto.BorrowingDTO;
 import me.jazzy.librarymanagementsystem.exception.notfound.BookNotFoundException;
+import me.jazzy.librarymanagementsystem.exception.notfound.BorrowingNotFoundException;
 import me.jazzy.librarymanagementsystem.exception.notfound.UserNotFoundException;
 import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.repository.BookRepository;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -43,6 +45,17 @@ public class BorrowingService {
                 "New Borrowing Added",
                 LocalDateTime.now()
         );
+    }
+
+    public void updateBorrowingState(Long id, BorrowingState borrowingState) {
+        Borrowing borrowing = findBorrowingById(id);
+        borrowing.setBorrowingState(borrowingState);
+        borrowingRepository.save(borrowing);
+    }
+
+    public Borrowing findBorrowingById(Long id) {
+        return borrowingRepository.findById(id)
+                .orElseThrow(() -> new BorrowingNotFoundException("There is no such borrowing"));
     }
 
 }
