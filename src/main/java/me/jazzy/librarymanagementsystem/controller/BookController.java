@@ -5,7 +5,6 @@ import me.jazzy.librarymanagementsystem.dto.BookDTO;
 import me.jazzy.librarymanagementsystem.model.Book;
 import me.jazzy.librarymanagementsystem.model.ResponseModel;
 import me.jazzy.librarymanagementsystem.service.BookService;
-import me.jazzy.librarymanagementsystem.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
