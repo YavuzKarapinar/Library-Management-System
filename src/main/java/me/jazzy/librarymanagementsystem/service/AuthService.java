@@ -13,12 +13,10 @@ import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
-public class RegisterService {
+public class AuthService {
 
     private final EmailValidation emailValidation;
     private final UserService userService;
-    private final BookService bookService;
-    private final CategoryService categoryService;
 
     public ResponseModel singUpUser(RegisterRequest request) {
 
@@ -45,24 +43,5 @@ public class RegisterService {
         );
     }
 
-    public ResponseModel registerBook(BookDTO bookDTO) {
 
-        Category category = categoryService.findCategoryByName(bookDTO.getCategoryName());
-
-        Book book = new Book(
-                bookDTO.getPublisher(),
-                bookDTO.getSummary(),
-                category,
-                bookDTO.getProductionYear(),
-                bookDTO.getAuthorName()
-        );
-
-        bookService.saveBook(book);
-
-        return new ResponseModel(
-                HttpStatus.OK.value(),
-                "New Book Added",
-                LocalDateTime.now()
-        );
-    }
 }
