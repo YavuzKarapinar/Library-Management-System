@@ -2,14 +2,10 @@ package me.jazzy.librarymanagementsystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
-public class RegisterRequest {
-    private String firstName;
-    private String lastName;
+public class LoginDTO {
     private String email;
     private String password;
 }

@@ -1,12 +1,16 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
-import me.jazzy.librarymanagementsystem.dto.BookDTO;
-import me.jazzy.librarymanagementsystem.dto.RegisterRequest;
+import me.jazzy.librarymanagementsystem.dto.LoginDTO;
+import me.jazzy.librarymanagementsystem.dto.RegisterDTO;
 import me.jazzy.librarymanagementsystem.exception.badrequest.UserBadRequestException;
 import me.jazzy.librarymanagementsystem.model.*;
 import me.jazzy.librarymanagementsystem.validator.EmailValidation;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,8 +21,9 @@ public class AuthService {
 
     private final EmailValidation emailValidation;
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
-    public ResponseModel singUpUser(RegisterRequest request) {
+    public ResponseModel singUpUser(RegisterDTO request) {
 
         boolean isEmailValid = emailValidation.test(request.getEmail());
 
@@ -39,6 +44,25 @@ public class AuthService {
         return new ResponseModel(
                 HttpStatus.OK.value(),
                 "User successfully registered.",
+                LocalDateTime.now()
+        );
+    }
+
+    public ResponseModel loginUser(LoginDTO loginDTO) {
+
+        boolean isEmailValid = emailValidation.test(loginDTO.getEmail());
+
+        if(!isEmailValid)
+            throw new UserBadRequestException("Email is not valid!");
+
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return new ResponseModel(
+                HttpStatus.OK.value(),
+                "User successfully logged in",
                 LocalDateTime.now()
         );
     }
