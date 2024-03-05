@@ -1,10 +1,12 @@
 package me.jazzy.librarymanagementsystem.service;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.dto.AuthResponseDTO;
 import me.jazzy.librarymanagementsystem.dto.LoginDTO;
 import me.jazzy.librarymanagementsystem.dto.RegisterDTO;
 import me.jazzy.librarymanagementsystem.exception.badrequest.UserBadRequestException;
 import me.jazzy.librarymanagementsystem.model.*;
+import me.jazzy.librarymanagementsystem.security.jwt.JwtGenerator;
 import me.jazzy.librarymanagementsystem.validator.EmailValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +24,7 @@ public class AuthService {
     private final EmailValidation emailValidation;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final JwtGenerator jwtGenerator;
 
     public ResponseModel singUpUser(RegisterDTO request) {
 
@@ -48,7 +51,7 @@ public class AuthService {
         );
     }
 
-    public ResponseModel loginUser(LoginDTO loginDTO) {
+    public AuthResponseDTO loginUser(LoginDTO loginDTO) {
 
         boolean isEmailValid = emailValidation.test(loginDTO.getEmail());
 
@@ -60,11 +63,9 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new ResponseModel(
-                HttpStatus.OK.value(),
-                "User successfully logged in",
-                LocalDateTime.now()
-        );
+        String token = jwtGenerator.generateToken(authentication);
+
+        return new AuthResponseDTO(token);
     }
 
 

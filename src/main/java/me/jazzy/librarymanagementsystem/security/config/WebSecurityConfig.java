@@ -1,7 +1,10 @@
 package me.jazzy.librarymanagementsystem.security.config;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.security.jwt.JWTAuthenticationFilter;
+import me.jazzy.librarymanagementsystem.security.jwt.JwtAuthEntryPoint;
 import me.jazzy.librarymanagementsystem.security.PasswordEncoder;
+import me.jazzy.librarymanagementsystem.security.jwt.JwtGenerator;
 import me.jazzy.librarymanagementsystem.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +16,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +27,8 @@ public class WebSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final JwtAuthEntryPoint authEntryPoint;
+    private final JwtGenerator jwtGenerator;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,6 +51,11 @@ public class WebSecurityConfig {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(authEntryPoint))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -60,5 +72,10 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public JWTAuthenticationFilter authenticationFilter() {
+        return new JWTAuthenticationFilter(jwtGenerator, userService);
     }
 }

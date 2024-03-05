@@ -1,6 +1,7 @@
 package me.jazzy.librarymanagementsystem.controller;
 
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.dto.AuthResponseDTO;
 import me.jazzy.librarymanagementsystem.dto.LoginDTO;
 import me.jazzy.librarymanagementsystem.dto.RegisterDTO;
 import me.jazzy.librarymanagementsystem.model.ResponseModel;
@@ -20,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("login")
-    public ResponseEntity<ResponseModel> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDTO loginDTO) {
         return new ResponseEntity<>(authService.loginUser(loginDTO), HttpStatus.OK);
     }
 
