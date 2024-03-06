@@ -7,7 +7,6 @@ import me.jazzy.librarymanagementsystem.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -31,9 +29,6 @@ public class UserService implements UserDetailsService {
 
         if(isEmailAlreadyTaken)
             throw new UserBadRequestException("Email already taken by another user");
-
-        String encodedPassword = encoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
 
         userRepository.save(user);
     }

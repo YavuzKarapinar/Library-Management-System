@@ -3,7 +3,6 @@ package me.jazzy.librarymanagementsystem.security.config;
 import lombok.AllArgsConstructor;
 import me.jazzy.librarymanagementsystem.security.jwt.JWTAuthenticationFilter;
 import me.jazzy.librarymanagementsystem.security.jwt.JwtAuthEntryPoint;
-import me.jazzy.librarymanagementsystem.security.PasswordEncoder;
 import me.jazzy.librarymanagementsystem.security.jwt.JwtGenerator;
 import me.jazzy.librarymanagementsystem.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -25,7 +26,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class WebSecurityConfig {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final JwtAuthEntryPoint authEntryPoint;
     private final JwtGenerator jwtGenerator;
@@ -63,7 +63,7 @@ public class WebSecurityConfig {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder.encoder());
+        provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userService);
         return provider;
     }
@@ -77,5 +77,10 @@ public class WebSecurityConfig {
     @Bean
     public JWTAuthenticationFilter authenticationFilter() {
         return new JWTAuthenticationFilter(jwtGenerator, userService);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

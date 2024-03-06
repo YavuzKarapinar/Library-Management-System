@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class AuthService {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseModel singUpUser(RegisterDTO request) {
 
@@ -37,7 +39,7 @@ public class AuthService {
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 LocalDateTime.now(),
                 UserType.MEMBER
         );
