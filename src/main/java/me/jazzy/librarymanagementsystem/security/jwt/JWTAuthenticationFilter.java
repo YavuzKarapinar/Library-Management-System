@@ -5,7 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import me.jazzy.librarymanagementsystem.exception.notfound.UserNotFoundException;
 import me.jazzy.librarymanagementsystem.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,12 +31,18 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     
         String token = getTokenFromRequest(request);
         if(StringUtils.hasText(token) && jwtGenerator.validateToken(token)) {
-            String email = jwtGenerator.getUsernameFromJWTToken(token);
-            UserDetails userDetails = userService.loadUserByUsername(email);
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(email, 0, userDetails.getAuthorities());
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            String email = jwtGenerator.extractUsername(token);
+            try {
+                UserDetails userDetails = userService.loadUserByUsername(email);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(email, 0, userDetails.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } catch (UserNotFoundException ex) {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.getWriter().print("Unauthorized");
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);

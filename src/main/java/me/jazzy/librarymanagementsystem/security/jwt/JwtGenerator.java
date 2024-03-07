@@ -1,50 +1,64 @@
 package me.jazzy.librarymanagementsystem.security.jwt;
 
 import io.jsonwebtoken.*;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.Authentication;
+import io.jsonwebtoken.security.Keys;
+import me.jazzy.librarymanagementsystem.exception.notfound.JwtNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtGenerator {
 
-    SecretKey secretKey = Jwts.SIG.HS256.key().build();
-
-    public String generateToken(Authentication authentication) {
-        String email = authentication.getName();
-        Date currentDate = new Date();
-        Date expireDate = new Date(currentDate.getTime() + 70000);
-
+    public String generateToken(String email) {
         return Jwts.builder()
                 .subject(email)
-                .issuedAt(currentDate)
-                .expiration(expireDate)
-                .signWith(secretKey)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .signWith(secretKey())
                 .compact();
     }
 
-    public String getUsernameFromJWTToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
+    public Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
 
-        return claims.getSubject();
+    public <T> T extractClaims(String token, Function<Claims, T> claimsResolvers) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolvers.apply(claims);
+    }
+
+    public String extractUsername(String token) {
+        return extractClaims(token, Claims::getSubject);
+    }
+
+    private SecretKey secretKey() {
+        String secret = "19283109asdklasd;adasd;1'!+%1a32";
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token);
-            return true;
+            if (!isTokenExpired(token)) {
+                Jwts.parser()
+                        .verifyWith(secretKey())
+                        .build()
+                        .parseSignedClaims(token);
+                return true;
+            }
         } catch (JwtException exception) {
-            throw new AuthenticationCredentialsNotFoundException("Jwt expired or incorrect");
+            throw new JwtNotFoundException("Jwt expired or incorrect");
         }
+        return false;
+    }
+
+    public boolean isTokenExpired(String token) {
+        return extractClaims(token, Claims::getExpiration).before(new Date());
     }
 }

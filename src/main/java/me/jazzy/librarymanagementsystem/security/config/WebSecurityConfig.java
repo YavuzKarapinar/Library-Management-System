@@ -2,7 +2,6 @@ package me.jazzy.librarymanagementsystem.security.config;
 
 import lombok.AllArgsConstructor;
 import me.jazzy.librarymanagementsystem.security.jwt.JWTAuthenticationFilter;
-import me.jazzy.librarymanagementsystem.security.jwt.JwtAuthEntryPoint;
 import me.jazzy.librarymanagementsystem.security.jwt.JwtGenerator;
 import me.jazzy.librarymanagementsystem.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +26,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final UserService userService;
-    private final JwtAuthEntryPoint authEntryPoint;
     private final JwtGenerator jwtGenerator;
 
     @Bean
@@ -51,8 +49,6 @@ public class WebSecurityConfig {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)

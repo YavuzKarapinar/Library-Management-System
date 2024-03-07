@@ -65,7 +65,7 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtGenerator.generateToken(authentication);
+        String token = jwtGenerator.generateToken(loginDTO.getEmail());
 
         return new AuthResponseDTO(token);
     }
